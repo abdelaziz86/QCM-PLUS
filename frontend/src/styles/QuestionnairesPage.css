@@ -1,0 +1,74 @@
+.questionnaires-container {
+    padding: 40px;
+    background-color: #f8f9fc;
+    min-height: 100vh;
+}
+
+.questionnaires-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2d3748;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* une seule colonne qui prend toute la largeur */
+    gap: 20px;
+}
+
+.questionnaire-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.questionnaire-card:hover {
+    transform: translateY(-4px);
+}
+
+.questionnaire-card h3 {
+    margin-top: 0;
+    color: #4a5568;
+}
+
+.questionnaire-card p {
+    color: #718096;
+}
+
+.questionnaire-card {
+    padding: 20px;
+    border-radius: 12px;
+    background: #fdfdfd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.questionnaire-card:hover {
+    transform: translateY(-4px);
+}
+
+.demarrer-button {
+    margin-top: 15px;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background-color: green;
+    float : right;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.demarrer-button:hover {
+    background: linear-gradient(135deg, #3385ff, #003399);
+    transform: translateY(-2px);
+}
+
