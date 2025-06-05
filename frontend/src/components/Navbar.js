@@ -12,7 +12,8 @@ const Navbar = () => {
                 <Link to="/">Questionnaires</Link>
                 {isAuthenticated && role === 'stagiaire' && <Link to="/historique">Historique</Link>}
                 {isAuthenticated && <Link to="/profil">Profil</Link>}
-                {isAuthenticated && role === 'admin' && <Link to="/stagiaires">Stagiaires</Link>}
+                {isAuthenticated && (role === 'admin' || role === 'superadmin') && <Link to="/stagiaires">Stagiaires</Link>}
+                {isAuthenticated && role === 'superadmin' && <Link to="/admins">Admins</Link>}
             </div>
             <div className="navbar-right">
                 {!isAuthenticated

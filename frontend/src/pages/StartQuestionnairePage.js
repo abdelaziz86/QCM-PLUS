@@ -2,22 +2,31 @@ import React, { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/StartQuestionnaire.css';
 import { AuthContext } from '../context/AuthContext';
-
+import axios from "axios";
 const StartQuestionnairePage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const { started, historique, numero_question, questionnaire } = location.state;
 
-    const handleStart = () => {
+    const handleStart = async () => {
         if (started === 0) {
-            // New questionnaire => go to /valider/:id
-            navigate(`/valider/${questionnaire.id}`);
+            try {
+                await axios.post('http://localhost:5000/api/historique/start', {
+                    user_id: user.id,
+                    questionnaire_id: questionnaire.id,
+                });
+
+                // After starting, redirect to the first question
+                navigate(`/valider-question/${questionnaire.id}`);
+            } catch (error) {
+                console.error("Erreur lors du démarrage du questionnaire :", error);
+                alert("Une erreur est survenue lors du démarrage du questionnaire.");
+            }
         } else if (historique?.termine) {
-            // Should never reach here (handled by UI already), but safe fallback
             navigate('/historique');
         } else {
-            // Resume in-progress questionnaire => go to /valider-question/:id
+            // Resume in-progress questionnaire
             navigate(`/valider-question/${questionnaire.id}`);
         }
     };

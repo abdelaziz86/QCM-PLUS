@@ -10,6 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 import Logout from "../pages/Logout";
 import ValiderQuestion from '../pages/ValiderQuestion'; // ✅ Import added
 import StartQuestionnairePage from '../pages/StartQuestionnairePage'; // ✅ Import added
+import AdminsPage from '../pages/AdminsPage'; // ✅ Import added
 
 const AppRoutes = () => {
     const { user } = useContext(AuthContext);
@@ -20,7 +21,8 @@ const AppRoutes = () => {
             <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
             <Route path="/historique" element={user?.role?.toLowerCase() === 'stagiaire' ? <HistoriquePage /> : <Navigate to="/login" />} />
             <Route path="/profil" element={user ? <ProfilPage /> : <Navigate to="/login" />} />
-            <Route path="/stagiaires" element={user?.role?.toLowerCase() === 'admin' ? <StagiairesPage /> : <Navigate to="/login" />} />
+            <Route path="/stagiaires" element={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'superadmin') ? <StagiairesPage /> : <Navigate to="/login" />} />
+            <Route path="/admins" element={user?.role?.toLowerCase() === 'superadmin' ? <AdminsPage /> : <Navigate to="/login" />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/valider-question/:questionnaire_id" element={user ? <ValiderQuestion /> : <Navigate to="/login" />} /> {/* ✅ New route */}
             <Route path="/start-questionnaire" element={<StartQuestionnairePage />} />

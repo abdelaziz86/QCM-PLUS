@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/StagiairesPage.css';
 
-const StagiairesPage = () => {
+const AdminsPage = () => {
     const [stagiaires, setStagiaires] = useState([]);
     const [showDialog, setShowDialog] = useState(false);
-    const [formData, setFormData] = useState({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'stagiaire' });
+    const [formData, setFormData] = useState({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'admin' });
     const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/users?role=stagiaire')
+        axios.get('http://localhost:5000/api/users?role=admin')
             .then(res => setStagiaires(res.data))
-            .catch(err => console.error('Erreur chargement stagiaires', err));
+            .catch(err => console.error('Erreur chargement admins', err));
     }, []);
 
     const handleDelete = (id) => {
@@ -38,7 +38,7 @@ const StagiairesPage = () => {
         } else {
             axios.post('http://localhost:5000/api/auth/register', formData)
                 .then(res => {
-                    axios.get('http://localhost:5000/api/users?role=stagiaire')
+                    axios.get('http://localhost:5000/api/users?role=admin')
                         .then(res => setStagiaires(res.data));
                     resetDialog();
                 })
@@ -49,7 +49,7 @@ const StagiairesPage = () => {
     const resetDialog = () => {
         setShowDialog(false);
         setEditingUser(null);
-        setFormData({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'stagiaire' });
+        setFormData({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'admin' });
     };
 
     const openEditDialog = (user) => {
@@ -61,7 +61,7 @@ const StagiairesPage = () => {
             email: user.email,
             password: '',
             confirmPassword: '',
-            role: user.role || 'stagiaire'
+            role: user.role || 'admin'
         });
         setShowDialog(true);
     };
@@ -69,7 +69,7 @@ const StagiairesPage = () => {
     return (
         <div className="stagiaires-container">
             <div className="header">
-                <h2>👥 Liste des Stagiaires</h2>
+                <h2>👥 Liste des Admins</h2>
                 <button className="btn" onClick={() => setShowDialog(true)}>Créer</button>
             </div>
 
@@ -94,7 +94,7 @@ const StagiairesPage = () => {
                 <div className="dialog-overlay">
                     <div className="dialog-box">
                         <div className="dialog-header">
-                            <h3>{editingUser ? 'Modifier Stagiaire' : 'Créer un nouveau stagiaire'}</h3>
+                            <h3>{editingUser ? 'Modifier Admin' : 'Créer un nouveau admin'}</h3>
                             <button className="btn-close" onClick={resetDialog}>X</button>
                         </div>
                         <div className="form-fields">
@@ -128,4 +128,4 @@ const StagiairesPage = () => {
     );
 };
 
-export default StagiairesPage;
+export default AdminsPage;
