@@ -2,22 +2,56 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/StagiairesPage.css';
 
+// Import icons
+import {
+    FaUsers,
+    FaPlus,
+    FaEdit,
+    FaTrash,
+    FaTimes,
+    FaBuilding,
+    FaEnvelope,
+    FaCalendar
+} from 'react-icons/fa';
+
 const StagiairesPage = () => {
     const [stagiaires, setStagiaires] = useState([]);
     const [showDialog, setShowDialog] = useState(false);
-    const [formData, setFormData] = useState({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'stagiaire' });
+    const [formData, setFormData] = useState({
+        nom: '',
+        prenom: '',
+        societe: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'stagiaire'
+    });
     const [editingUser, setEditingUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/users?role=stagiaire')
-            .then(res => setStagiaires(res.data))
-            .catch(err => console.error('Erreur chargement stagiaires', err));
+        fetchStagiaires();
     }, []);
 
-    const handleDelete = (id) => {
-        if (window.confirm('Est ce que vous etes sur de vouloir supprimer cet utilisateur ?')) {
+    const fetchStagiaires = () => {
+        setLoading(true);
+        axios.get('http://localhost:5000/api/users?role=stagiaire')
+            .then(res => {
+                setStagiaires(res.data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Erreur chargement stagiaires', err);
+                setLoading(false);
+            });
+    };
+
+    const handleDelete = (id, nom, prenom) => {
+        if (window.confirm(`Êtes-vous sûr de vouloir supprimer ${prenom} ${nom} ?`)) {
             axios.delete(`http://localhost:5000/api/users/${id}`)
-                .then(() => setStagiaires(prev => prev.filter(user => user.id !== id)))
+                .then(() => {
+                    setStagiaires(prev => prev.filter(user => user.id !== id));
+                })
                 .catch(err => console.error('Erreur suppression', err));
         }
     };
@@ -37,9 +71,8 @@ const StagiairesPage = () => {
                 .catch(err => console.error('Erreur modification', err));
         } else {
             axios.post('http://localhost:5000/api/auth/register', formData)
-                .then(res => {
-                    axios.get('http://localhost:5000/api/users?role=stagiaire')
-                        .then(res => setStagiaires(res.data));
+                .then(() => {
+                    fetchStagiaires();
                     resetDialog();
                 })
                 .catch(err => console.error('Erreur création', err));
@@ -49,7 +82,15 @@ const StagiairesPage = () => {
     const resetDialog = () => {
         setShowDialog(false);
         setEditingUser(null);
-        setFormData({ nom: '', prenom: '', societe: '', email: '', password: '', confirmPassword: '', role: 'stagiaire' });
+        setFormData({
+            nom: '',
+            prenom: '',
+            societe: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            role: 'stagiaire'
+        });
     };
 
     const openEditDialog = (user) => {
@@ -66,60 +107,145 @@ const StagiairesPage = () => {
         setShowDialog(true);
     };
 
+    if (loading) {
+        return (
+            <div className="stagiaires-container">
+                <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <p>Chargement des stagiaires...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="stagiaires-container">
-            <div className="header">
-                <h2>👥 Liste des Stagiaires</h2>
-                <button className="btn" onClick={() => setShowDialog(true)}>Créer</button>
-            </div>
-
-            <div className="stagiaires-list">
-                {stagiaires.map(user => (
-                    <div key={user.id} className="stagiaire-card">
-                        <div className="stagiaire-info">
-                            <h3>{user.nom} {user.prenom}</h3>
-                            <p><strong>Société :</strong> {user.societe}</p>
-                            <p><strong>Email :</strong> {user.email}</p>
-                            <p><strong>Date de création :</strong> {new Date(user.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <div className="stagiaire-actions">
-                            <button className="btn-outline" onClick={() => openEditDialog(user)}>Modifier</button>
-                            <button className="btn-danger" onClick={() => handleDelete(user.id)}>Supprimer</button>
-                        </div>
+            {/* Header with gradient background */}
+            <header className="page-header-gradient">
+                <div className="header-content">
+                    <div className="header-text">
+                        <h1><FaUsers className="header-icon" /> Gestion des Stagiaires</h1>
+                        <p>Gérez les comptes stagiaires de votre organisation</p>
                     </div>
-                ))}
+                    <button className="btn-create" onClick={() => setShowDialog(true)}>
+                        <FaPlus />
+                        Nouveau Stagiaire
+                    </button>
+                </div>
+            </header>
+
+            <div className="main-content">
+                {stagiaires.length === 0 ? (
+                    <div className="empty-state">
+                        <div className="empty-icon">
+                            <FaUsers />
+                        </div>
+                        <h3>Aucun stagiaire enregistré</h3>
+                        <p>Commencez par créer votre premier stagiaire</p>
+                        <button className="btn-primary" onClick={() => setShowDialog(true)}>
+                            Créer un stagiaire
+                        </button>
+                    </div>
+                ) : (
+                    <div className="stagiaires-grid">
+                        {stagiaires.map(user => (
+                            <div key={user.id} className="stagiaire-card">
+                                <div className="card-header">
+                                    <h3>{user.prenom} {user.nom}</h3>
+                                    <div className="card-actions">
+                                        <button
+                                            className="btn-edit"
+                                            onClick={() => openEditDialog(user)}
+                                            title="Modifier"
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            className="btn-delete"
+                                            onClick={() => handleDelete(user.id, user.nom, user.prenom)}
+                                            title="Supprimer"
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="card-body">
+                                    <div className="user-info">
+                                        <div className="info-item">
+                                            <FaBuilding className="info-icon" />
+                                            <span>{user.societe || 'Non spécifiée'}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <FaEnvelope className="info-icon" />
+                                            <span>{user.email}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <FaCalendar className="info-icon" />
+                                            <span>Inscrit le {new Date(user.created_at).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
+            {/* Create/Edit Dialog */}
             {showDialog && (
                 <div className="dialog-overlay">
                     <div className="dialog-box">
                         <div className="dialog-header">
-                            <h3>{editingUser ? 'Modifier Stagiaire' : 'Créer un nouveau stagiaire'}</h3>
-                            <button className="btn-close" onClick={resetDialog}>X</button>
+                            <h3>{editingUser ? 'Modifier le stagiaire' : 'Créer un nouveau stagiaire'}</h3>
+                            <button className="btn-close" onClick={resetDialog}>
+                                <FaTimes />
+                            </button>
                         </div>
-                        <div className="form-fields">
-                            {['nom', 'prenom', 'societe', 'email'].map(field => (
-                                <input
-                                    key={field}
-                                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                                    type="text"
-                                    value={formData[field]}
-                                    onChange={e => setFormData({ ...formData, [field]: e.target.value })}
-                                />
-                            ))}
-                            <input
-                                placeholder="Mot de passe"
-                                type="password"
-                                value={formData.password}
-                                onChange={e => setFormData({ ...formData, password: e.target.value })}
-                            />
-                            <input
-                                placeholder="Confirmer le mot de passe"
-                                type="password"
-                                value={formData.confirmPassword}
-                                onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
-                            />
-                            <button className="btn" onClick={handleSave}>{editingUser ? 'Modifier' : 'Créer'}</button>
+
+                        <div className="dialog-content">
+                            <div className="form-grid">
+                                {['nom', 'prenom', 'societe', 'email'].map(field => (
+                                    <div key={field} className="form-group">
+                                        <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                                        <input
+                                            type="text"
+                                            value={formData[field]}
+                                            onChange={e => setFormData({ ...formData, [field]: e.target.value })}
+                                            placeholder={`Entrez le ${field}`}
+                                        />
+                                    </div>
+                                ))}
+
+                                <div className="form-group">
+                                    <label>Mot de passe</label>
+                                    <input
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                        placeholder="Entrez le mot de passe"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Confirmer le mot de passe</label>
+                                    <input
+                                        type="password"
+                                        value={formData.confirmPassword}
+                                        onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                        placeholder="Confirmez le mot de passe"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="dialog-actions">
+                            <button className="btn-cancel" onClick={resetDialog}>
+                                Annuler
+                            </button>
+                            <button className="btn-save" onClick={handleSave}>
+                                {editingUser ? 'Modifier' : 'Créer'}
+                            </button>
                         </div>
                     </div>
                 </div>

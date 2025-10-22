@@ -5,7 +5,8 @@ const { Sequelize } = require('sequelize');
 const User = require('./User');
 const Questionnaire = require('./Questionnaire');
 const Question = require('./Question');
-const Historique = require('./Historique'); // ⬅️ NEW
+const Historique = require('./Historique');
+const Reponse = require('./Reponse'); // ⬅️ NOUVEAU MODÈLE
 
 // Define associations
 
@@ -21,7 +22,7 @@ Question.belongsTo(Questionnaire, {
     as: 'questionnaire',
 });
 
-// Historique ↔ User
+// User ↔ Historique
 User.hasMany(Historique, {
     foreignKey: 'user_id',
     as: 'historiques',
@@ -32,7 +33,7 @@ Historique.belongsTo(User, {
     as: 'user',
 });
 
-// Historique ↔ Questionnaire
+// Questionnaire ↔ Historique
 Questionnaire.hasMany(Historique, {
     foreignKey: 'questionnaire_id',
     as: 'historiques',
@@ -43,15 +44,39 @@ Historique.belongsTo(Questionnaire, {
     as: 'questionnaire',
 });
 
-// Historique ↔ Question (current question)
+// Question ↔ Historique (current question)
 Question.hasMany(Historique, {
     foreignKey: 'question_actuelle_id',
-    as: 'historiques',
+    as: 'historiques_en_cours',
     onDelete: 'SET NULL',
 });
 Historique.belongsTo(Question, {
     foreignKey: 'question_actuelle_id',
     as: 'question_actuelle',
+});
+
+// ⭐ NOUVELLES ASSOCIATIONS POUR RÉPONSES
+
+// Historique ↔ Reponses
+Historique.hasMany(Reponse, {
+    foreignKey: 'historique_id',
+    as: 'reponses',
+    onDelete: 'CASCADE', // Si on supprime l'historique, on supprime les réponses
+});
+Reponse.belongsTo(Historique, {
+    foreignKey: 'historique_id',
+    as: 'historique',
+});
+
+// Question ↔ Reponses
+Question.hasMany(Reponse, {
+    foreignKey: 'question_id',
+    as: 'reponses_utilisateurs',
+    onDelete: 'CASCADE', // Si on supprime la question, on supprime les réponses
+});
+Reponse.belongsTo(Question, {
+    foreignKey: 'question_id',
+    as: 'question',
 });
 
 // Combine into db object
@@ -61,11 +86,12 @@ const db = {
     User,
     Questionnaire,
     Question,
-    Historique // ⬅️ Added to db
+    Historique,
+    Reponse // ⬅️ AJOUTÉ À L'OBJET DB
 };
 
 // Sync models
-db.sequelize.sync({ alter: true }) // change to { force: true } to reset tables
+db.sequelize.sync({ alter: true })
     .then(() => console.log('✅ All models synced with DB'))
     .catch(err => console.error('❌ Model sync error:', err));
 

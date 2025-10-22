@@ -1,88 +1,274 @@
+/* Container */
 .profil-container {
-    padding: 40px;
-    background: #f0f4f8;
+    padding: 40px 20px;
+    background: #f6fbff;
     min-height: 100vh;
-    color: #2d3748;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-h2 {
-    text-align: center;
-    color: #2b6cb0;
-    margin-bottom: 30px;
-}
-
-.profil-card {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.profil-header {
+    color: #0f1724;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.profil-field {
-    margin-bottom: 15px;
-    font-size: 16px;
-}
-
-.profil-field input {
+/* Card */
+.profil-card {
     width: 100%;
-    padding: 6px 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    max-width: 900px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(15, 23, 36, 0.06);
+    overflow: hidden;
 }
 
-.edit-icon {
-    cursor: pointer;
-    font-size: 20px;
-    color: #3182ce;
+/* Header */
+.profil-header {
+    background: linear-gradient(77deg, #CAE7FF 0%, #A6DAF7 100%);
+    color: black;
+    padding: 20px 22px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 
-.edit-icon.save {
-    color: #38a169;
+/* Header left group: avatar + titles */
+.header-left {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    min-width: 0;
 }
 
+.avatar {
+    width: 68px;
+    height: 68px;
+    flex: 0 0 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.avatar img {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+.avatar-fallback {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #0f1724;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    font-size: 22px;
+}
+
+/* Titles */
+.header-texts .welcome {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0b3250;
+}
+
+.header-texts .user-name {
+    color: #07223a;
+}
+
+.header-texts .subtitle {
+    margin-top: 4px;
+    font-size: 0.95rem;
+    color: rgba(5, 30, 53, 0.8);
+}
+
+/* Header actions */
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Buttons - main style (aliceblue) */
 .btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
-    font-size: 15px;
-    border: none;
-    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s ease-in-out;
+    font-weight: 600;
+    background: aliceblue !important;
+    color:black !important;
+    border: 1px solid gray !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+/* Edit button uses main style */
+.btn-edit {
+    /* uses .btn */
+}
+
+/* Cancel uses subtle style (same base but transparent border) */
+.btn-cancel {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Save button remains green for emphasis */
+.btn-save {
+    background: #38a169;
+    border: 1px solid #2f855a;
+    color: white;
 }
 
 .btn-icon {
-    font-size: 16px;
+    font-size: 14px;
 }
 
+/* Body / fields */
+.profil-body {
+    padding: 14px 18px 24px 18px;
+}
+
+.profil-grid {
+    display: grid;
+    gap: 10px;
+}
+
+/* Field blocks */
+.profil-field {
+    display: grid;
+    gap: 8px;
+    padding: 14px 12px;
+    align-items: center;
+    border-radius: 10px;
+    transition: background 0.12s ease;
+    background: #fff;
+}
+
+.profil-field:hover {
+    background: #fbfdff;
+}
+
+/* label / value layout */
+.label {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 600;
+}
+
+.value {
+    font-size: 15px;
+    color: #0f1724;
+}
+
+/* Inputs */
+.profil-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.profil-field input:focus {
+    outline: none;
+    border-color: #2b6cb0;
+    box-shadow: 0 6px 14px rgba(46, 125, 184, 0.12);
+}
+
+/* Desktop: label/value side-by-side */
+@media (min-width: 780px) {
+    .profil-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profil-field {
+        display: grid;
+        grid-template-columns: 220px 1fr; /* label area + value area */
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    .label {
+        font-size: 14px;
+        color: #475569;
+    }
+
+    .value {
+        font-size: 15px;
+    }
+}
+
+/* Responsive header stacking (small screens) */
+@media (max-width: 600px) {
+    .profil-header {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .header-left {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .avatar {
+        width: 56px;
+        height: 56px;
+        flex: 0 0 56px;
+    }
+
+    .avatar img,
+    .avatar-fallback {
+        width: 56px;
+        height: 56px;
+    }
+
+    .header-texts .welcome {
+        font-size: 1rem;
+    }
+
+    .profil-body {
+        padding: 12px 14px 18px 14px;
+    }
+}
+
+
+/* Label icons */
+.label-icon {
+    background: #f7fafc;
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    color: #667eea;
+}
+
+/* Edit button specifically styled */
 .btn-edit {
-    background-color: #3182ce;
-    color: white;
-}
-
-.btn-edit:hover {
-    background-color: #2b6cb0;
-}
-
-.btn-save {
-    background-color: #38a169;
-    color: white;
-}
-
-.btn-save:hover {
-    background-color: #2f855a;
+    background: aliceblue;
+    border: 1px solid gray;
+    color: black;
 }

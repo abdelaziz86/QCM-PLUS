@@ -1,4 +1,4 @@
-const { Questionnaire, Question } = require('../../models');
+const { Questionnaire, Question, Historique } = require('../../models');
 
 // ✅ Create a new questionnaire
 exports.createQuestionnaire = async (req, res) => {
@@ -72,7 +72,7 @@ exports.updateQuestionnaire = async (req, res) => {
     }
 };
 
-// ✅ Delete questionnaire
+// ✅ Delete questionnaire + associated questions + historique
 exports.deleteQuestionnaire = async (req, res) => {
     try {
         const { id } = req.params;
@@ -80,10 +80,16 @@ exports.deleteQuestionnaire = async (req, res) => {
         const questionnaire = await Questionnaire.findByPk(id);
         if (!questionnaire) return res.status(404).json({ msg: "Questionnaire introuvable." });
 
+        await Historique.destroy({ where: { questionnaire_id: id } });
+
+        await Question.destroy({ where: { questionnaire_id: id } });
+
+        // Supprimer le questionnaire
         await questionnaire.destroy();
 
-        res.json({ msg: "Questionnaire supprimé." });
+        res.json({ msg: "Questionnaire, questions et historique supprimés." });
     } catch (err) {
         res.status(500).json({ msg: "Erreur serveur", err });
     }
 };
+

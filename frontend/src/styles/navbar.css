@@ -1,19 +1,220 @@
+/* Navbar.css */
 .navbar {
+    background: linear-gradient(135deg, #1a1f3b 0%, #2d3748 100%);
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-container {
     display: flex;
     justify-content: space-between;
-    background-color: #1e1e2f;
-    padding: 15px 40px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 70px;
 }
 
-.navbar a {
-    color: #f3f3f3;
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
     text-decoration: none;
-    margin: 0 15px;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
 }
 
-.navbar a:hover {
-    color: #9f7aea;
+.brand-icon {
+    font-size: 1.8rem;
+    margin-right: 10px;
+}
+
+.brand-text {
+    background: linear-gradient(77deg, #CAE7FF 0%, #A6DAF7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navbar-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 40px;
+}
+
+.navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    color: #e2e8f0;
+    text-decoration: none;
+    padding: 0 16px;
+    height: 70px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::before {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.nav-text {
+    font-weight: 500;
+}
+
+.login-link, .logout-link {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-left: 10px;
+    padding: 0 20px;
+}
+
+.login-link:hover, .logout-link:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.navbar-overlay {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .navbar-menu {
+        margin-left: 20px;
+    }
+
+    .nav-link {
+        padding: 0 12px;
+    }
+
+    .nav-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0 15px;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .navbar-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 280px;
+        height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #1a1f3b 0%, #2d3748 100%);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-left: 0;
+        transition: left 0.3s ease;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        overflow-y: auto;
+    }
+
+    .navbar-menu.active {
+        left: 0;
+    }
+
+    .navbar-left, .navbar-right {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-link {
+        width: 100%;
+        height: auto;
+        padding: 15px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link::before {
+        display: none;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .login-link, .logout-link {
+        background: transparent;
+        margin: 10px 0 0 0;
+        padding: 15px 25px;
+        border-radius: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+
+    .navbar-overlay {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-text {
+        display: none;
+    }
+
+    .navbar-container {
+        padding: 0 10px;
+    }
 }

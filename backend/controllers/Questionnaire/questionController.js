@@ -101,3 +101,40 @@ exports.deleteQuestion = async (req, res) => {
         res.status(500).json({ msg: "Erreur serveur", err });
     }
 };
+
+
+// ✅ Bulk insert questions
+exports.bulkInsertQuestions = async (req, res) => {
+    try {
+        const { questionnaire_id } = req.params;
+        const questions = req.body;
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({ msg: "Le tableau de questions est requis." });
+        }
+
+        const questionnaire = await Questionnaire.findByPk(questionnaire_id);
+        if (!questionnaire) {
+            return res.status(404).json({ msg: "Questionnaire introuvable." });
+        }
+
+        const createdQuestions = await Promise.all(
+            questions.map(q =>
+                Question.create({
+                    questionnaire_id,
+                    description: q.description,
+                    reponse_1: q.reponse_1,
+                    reponse_2: q.reponse_2,
+                    reponse_3: q.reponse_3,
+                    reponse_4: q.reponse_4,
+                    reponse_5: q.reponse_5,
+                    bonne_reponse: q.bonne_reponse
+                })
+            )
+        );
+
+        res.status(201).json({ msg: "Questions créées avec succès.", questions: createdQuestions });
+    } catch (err) {
+        res.status(500).json({ msg: "Erreur serveur", err });
+    }
+};

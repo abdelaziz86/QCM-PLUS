@@ -10,5 +10,6 @@ router.get('/questionnaire/:questionnaire_id', questionController.getQuestionsBy
 router.get('/:id', questionController.getQuestionById);
 router.put('/:id', questionController.updateQuestion);
 router.delete('/:id', questionController.deleteQuestion);
+router.post('/bulk/:questionnaire_id', questionController.bulkInsertQuestions);
 
 module.exports = router;

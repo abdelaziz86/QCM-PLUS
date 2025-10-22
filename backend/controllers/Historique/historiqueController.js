@@ -1,4 +1,4 @@
-const { Historique, Question, Questionnaire } = require('../../models');
+const { Historique, Question, Questionnaire, Reponse } = require('../../models');
 
 // ✅ 1. Démarrer un nouveau questionnaire
 exports.startQuestionnaire = async (req, res) => {
@@ -26,11 +26,11 @@ exports.startQuestionnaire = async (req, res) => {
     }
 };
 
-// ✅ 2. Valider une réponse et passer à la question suivante
+// ✅ 2. Valider une réponse et sauvegarder dans reponses
 exports.validateQuestion = async (req, res) => {
     try {
         const { user_id, questionnaire_id } = req.params;
-        const { reponses } = req.body; // Ex: "1,0,0,1,0"
+        const { reponses } = req.body;
 
         if (!user_id || !questionnaire_id) {
             return res.status(400).json({ msg: "user_id et questionnaire_id sont requis" });
@@ -54,8 +54,15 @@ exports.validateQuestion = async (req, res) => {
         // Comparaison des réponses
         const userRep = reponses.split(',').map(Number);
         const bonneRep = (question.bonne_reponse || '').split(',').map(Number);
-
         const isCorrect = JSON.stringify(userRep) === JSON.stringify(bonneRep);
+
+        // ⭐ NOUVEAU : Sauvegarder la réponse dans la table reponses
+        await Reponse.create({
+            historique_id: historique.id,
+            question_id: question.id,
+            reponse_utilisateur: reponses, // Ex: "1,0,0,1,0"
+            est_correcte: isCorrect
+        });
 
         // Mise à jour du compteur si réponse correcte
         if (isCorrect) {
@@ -72,10 +79,8 @@ exports.validateQuestion = async (req, res) => {
         const nextQuestion = allQuestions[currentIndex + 1];
 
         if (nextQuestion) {
-            // Continuer
             historique.question_actuelle_id = nextQuestion.id;
         } else {
-            // Fin du questionnaire
             historique.termine = true;
             historique.date_fin = new Date();
             historique.question_actuelle_id = null;
@@ -87,7 +92,8 @@ exports.validateQuestion = async (req, res) => {
             msg: isCorrect ? "Bonne réponse" : "Mauvaise réponse",
             correcte: isCorrect,
             prochaine_question: nextQuestion ? nextQuestion.id : null,
-            termine: historique.termine
+            termine: historique.termine,
+            historique_id: historique.id // ⬅️ Ajoute cette ligne
         });
 
     } catch (err) {
@@ -149,6 +155,7 @@ exports.getCurrentHistorique = async (req, res) => {
 };
 
 
+
 exports.getHistoriquesByUser = async (req, res) => {
     try {
         const { user_id } = req.params;
@@ -200,6 +207,67 @@ exports.getHistoriquesByUser = async (req, res) => {
         }));
 
         res.json(enriched);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Erreur serveur", err });
+    }
+};
+
+
+// ✅ NOUVELLE FONCTION : Récupérer les détails d'un historique avec les réponses par question
+exports.getHistoriqueDetaille = async (req, res) => {
+    try {
+        const { historique_id } = req.params;
+
+        const historique = await Historique.findByPk(historique_id, {
+            include: [
+                {
+                    model: Questionnaire,
+                    as: 'questionnaire',
+                    attributes: ['id', 'nom', 'description']
+                },
+                {
+                    model: Reponse,
+                    as: 'reponses',
+                    include: [
+                        {
+                            model: Question,
+                            as: 'question',
+                            attributes: ['id', 'description', 'reponse_1', 'reponse_2', 'reponse_3', 'reponse_4', 'reponse_5', 'bonne_reponse']
+                        }
+                    ],
+                    order: [['created_at', 'ASC']] // Ordre chronologique
+                }
+            ]
+        });
+
+        if (!historique) {
+            return res.status(404).json({ msg: "Historique non trouvé" });
+        }
+
+        // Structurer les données pour faciliter l'affichage
+        const questionsAvecReponses = historique.reponses.map(reponse => ({
+            question: reponse.question,
+            reponse_utilisateur: reponse.reponse_utilisateur,
+            est_correcte: reponse.est_correcte,
+            created_at: reponse.created_at
+        }));
+
+        res.json({
+            historique: {
+                id: historique.id,
+                user_id: historique.user_id,
+                questionnaire_id: historique.questionnaire_id,
+                nb_bonnes_reponses: historique.nb_bonnes_reponses,
+                nb_total_questions: historique.nb_total_questions,
+                termine: historique.termine,
+                date_debut: historique.date_debut,
+                date_fin: historique.date_fin
+            },
+            questionnaire: historique.questionnaire,
+            questions: questionsAvecReponses
+        });
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ msg: "Erreur serveur", err });

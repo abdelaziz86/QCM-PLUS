@@ -10,7 +10,9 @@ import { AuthContext } from '../context/AuthContext';
 import Logout from "../pages/Logout";
 import ValiderQuestion from '../pages/ValiderQuestion'; // ✅ Import added
 import StartQuestionnairePage from '../pages/StartQuestionnairePage'; // ✅ Import added
+import QuestionsPage from '../pages/QuestionsPage'; // ✅ Import added
 import AdminsPage from '../pages/AdminsPage'; // ✅ Import added
+import DetailHistorique from '../pages/DetailHistorique'; // ✅ Import added
 
 const AppRoutes = () => {
     const { user } = useContext(AuthContext);
@@ -26,6 +28,8 @@ const AppRoutes = () => {
             <Route path="/logout" element={<Logout />} />
             <Route path="/valider-question/:questionnaire_id" element={user ? <ValiderQuestion /> : <Navigate to="/login" />} /> {/* ✅ New route */}
             <Route path="/start-questionnaire" element={<StartQuestionnairePage />} />
+            <Route path="/questions/:id" element={<QuestionsPage />} />
+            <Route path="/historique/detail/:historique_id" element={<DetailHistorique />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
