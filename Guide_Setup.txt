@@ -5,7 +5,11 @@
    - cd backend
    - npm install
    - npm start
-4- Ouvrir le terminal sous la répertoire du projet : // FRONTEND : vous devez avez react installé
+5- Ouvrir le terminal sous la répertoire du projet : // FRONTEND : vous devez avez react installé
    - cd frontend
    - npm install
    - npm run dev
+6- Se connecter dans l'application avec : 
+   stagiaire@test.com : 123456
+   admin@test.com : 123456
+   superadmin@test.com : 123456
