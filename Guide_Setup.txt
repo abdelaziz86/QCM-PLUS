@@ -1,0 +1,11 @@
+1- Cloner la repo : "git clone https://github.com/abdelaziz86/QCM-PLUS"
+2- Sous phpymyadmin (en utilisant XAMPP ou WAMP) créer une base de données vide QCM
+3- Importer dedands le script DB_script.sql
+4- Ouvrir le terminal sous la répertoire du projet : // BACKEND : vous devez avoir node js installé
+   - cd backend
+   - npm install
+   - npm start
+4- Ouvrir le terminal sous la répertoire du projet : // FRONTEND : vous devez avez react installé
+   - cd frontend
+   - npm install
+   - npm run dev
